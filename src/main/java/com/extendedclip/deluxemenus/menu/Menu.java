@@ -346,54 +346,52 @@ public class Menu {
             holder.setMenuName(this.options.name());
             holder.setActiveItems(activeItems);
 
-            this.options.openHandler().ifPresent(h -> h.onClick(holder));
-
-            String title = StringUtils.color(holder.setPlaceholdersAndArguments(this.options.title()));
-
-            Inventory inventory;
-
-            if (this.options.type() != InventoryType.CHEST) {
-                inventory = Bukkit.createInventory(holder, this.options.type(), title);
-            } else {
-                inventory = Bukkit.createInventory(holder, this.options.size(), title);
-            }
-
-            holder.setInventory(inventory);
-
-            boolean update = false;
-
-            for (MenuItem item : activeItems) {
-
-                ItemStack iStack = item.getItemStack(holder);
-
-                if (iStack == null) {
-                    continue;
-                }
-
-                iStack = plugin.getMenuItemMarker().mark(iStack);
-
-                int slot = item.options().slot();
-
-                if (slot >= this.options.size()) {
-                    plugin.debug(
-                            DebugLevel.HIGHEST,
-                            Level.WARNING,
-                            "Item set to slot " + slot + " for menu: " + this.options.name() + " exceeds the inventory size!",
-                            "This item will not be added to the menu!"
-                    );
-                    continue;
-                }
-
-                if (item.options().updatePlaceholders()) {
-                    update = true;
-                }
-
-                inventory.setItem(item.options().slot(), iStack);
-            }
-
-            final boolean updatePlaceholders = update;
-
             scheduler.runTask(viewer, () -> {
+                this.options.openHandler().ifPresent(h -> h.onClick(holder));
+
+                String title = StringUtils.color(holder.setPlaceholdersAndArguments(this.options.title()));
+
+                Inventory inventory;
+
+                if (this.options.type() != InventoryType.CHEST) {
+                    inventory = Bukkit.createInventory(holder, this.options.type(), title);
+                } else {
+                    inventory = Bukkit.createInventory(holder, this.options.size(), title);
+                }
+
+                holder.setInventory(inventory);
+
+                boolean update = false;
+
+                for (MenuItem item : activeItems) {
+
+                    ItemStack iStack = item.getItemStack(holder);
+
+                    if (iStack == null) {
+                        continue;
+                    }
+
+                    iStack = plugin.getMenuItemMarker().mark(iStack);
+
+                    int slot = item.options().slot();
+
+                    if (slot >= this.options.size()) {
+                        plugin.debug(
+                                DebugLevel.HIGHEST,
+                                Level.WARNING,
+                                "Item set to slot " + slot + " for menu: " + this.options.name() + " exceeds the inventory size!",
+                                "This item will not be added to the menu!"
+                        );
+                        continue;
+                    }
+
+                    if (item.options().updatePlaceholders()) {
+                        update = true;
+                    }
+
+                    inventory.setItem(item.options().slot(), iStack);
+                }
+
                 if (options.refresh()) {
                     holder.startRefreshTask();
                 }
@@ -405,7 +403,7 @@ public class Menu {
                 viewer.openInventory(inventory);
                 menuHolders.add(holder);
 
-                if (updatePlaceholders) {
+                if (update) {
                     holder.startUpdatePlaceholdersTask();
                 }
             });

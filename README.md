@@ -34,6 +34,13 @@ If you would like to contribute towards DeluxeMenus should you take a look at ou
 - [Issue Tracker][issues]
 - [Discord Support][discord]
 
+## Folia Support
+This version of DeluxeMenus includes full support for the **Folia** engine.
+- All menu opening and refreshing logic has been optimized for region-based threading.
+- Requirement evaluations and inventory mutations are now properly scheduled on the entity's thread.
+- The `UniversalScheduler` has been updated to handle Folia's region-aware scheduling more reliably.
+- Added `folia-supported: true` to `plugin.yml`.
+
 ## Quick Links
 - [Wiki](https://wiki.helpch.at/clips-plugins/deluxemenus/)
 - [CI Server][ci]

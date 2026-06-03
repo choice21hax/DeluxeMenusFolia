@@ -118,7 +118,7 @@ public class FoliaScheduler implements TaskScheduler {
     public MyScheduledTask runTaskLater(Location location, Runnable runnable, long delay) {
         //Folia exception: Delay ticks may not be <= 0
         if (delay <= 0) {
-            return runTask(runnable);
+            return runTask(location, runnable);
         }
         return new FoliaScheduledTask(regionScheduler.runDelayed(plugin, location, task -> runnable.run(), delay));
     }
@@ -165,6 +165,7 @@ public class FoliaScheduler implements TaskScheduler {
 
     @Override
     public MyScheduledTask runTaskTimerAsynchronously(Runnable runnable, long delay, long period) {
+        delay = getOneIfNotPositive(delay);
         return new FoliaScheduledTask(asyncScheduler.runAtFixedRate(plugin, task -> runnable.run(), delay * 50, period * 50, TimeUnit.MILLISECONDS));
     }
 
